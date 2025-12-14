@@ -1,6 +1,6 @@
 package com.application.project.Employee;
 
-import com.application.EmployeeStatus.EmployeeStatus;
+import com.application.project.EmployeeStatus.EmployeeStatus;
 
 import jakarta.persistence.*;
 

@@ -1,6 +1,6 @@
 package com.application.project.Job;
 
-import com.application.Employee.Employee;
+import com.application.project.Employee.Employee;
 
 import jakarta.persistence.Column; 
 import jakarta.persistence.Entity;

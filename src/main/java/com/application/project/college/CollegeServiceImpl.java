@@ -3,7 +3,7 @@ package com.application.project.college;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.application.placementofficer.PlacementOfficerRepository;
+import com.application.project.placementofficer.PlacementOfficerRepository;
 
 import java.util.List;
 import java.util.Optional;
