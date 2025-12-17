@@ -1,5 +1,7 @@
 package com.application.project.Drivejob;
 
+import com.application.project.Drive.Drive;
+import com.application.project.Job.Job;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
@@ -8,16 +10,20 @@ import jakarta.persistence.*;
 public class DriveJob {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ auto-increment
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "driveId")
-    private Integer driveId;
+    // ✅ FK → drive.id
+    @ManyToOne
+    @JoinColumn(name = "driveId", referencedColumnName = "id")
+    private Drive drive;
 
-    @Column(name = "jobId")
-    private Integer jobId;
+    // ✅ FK → job.id
+    @ManyToOne
+    @JoinColumn(name = "jobId", referencedColumnName = "id")
+    private Job job;
 
-    @Column(name = "`package`") // reserved keyword fix
+    @Column(name = "`package`")
     @JsonProperty("package")
     private String packageValue;
 
@@ -27,52 +33,28 @@ public class DriveJob {
     private Integer cgpaCutoff;
     private String branch;
 
-    // ✅ Mandatory no-args constructor
-    public DriveJob() {
-    }
+    public DriveJob() {}
 
-    // ✅ Constructor WITHOUT id (important)
-    public DriveJob(Integer driveId,
-                    Integer jobId,
-                    String packageValue,
-                    Integer tenthCutOffPercentage,
-                    Integer twelfthCutOffPercentage,
-                    Integer backlogsEligibility,
-                    Integer cgpaCutoff,
-                    String branch) {
-
-        this.driveId = driveId;
-        this.jobId = jobId;
-        this.packageValue = packageValue;
-        this.tenthCutOffPercentage = tenthCutOffPercentage;
-        this.twelfthCutOffPercentage = twelfthCutOffPercentage;
-        this.backlogsEligibility = backlogsEligibility;
-        this.cgpaCutoff = cgpaCutoff;
-        this.branch = branch;
-    }
-
-    // ================== Getters & Setters ==================
+    // ================= Getters & Setters =================
 
     public Integer getId() {
         return id;
     }
 
-    // ❌ Do NOT add setter for id (auto-generated)
-
-    public Integer getDriveId() {
-        return driveId;
+    public Drive getDrive() {
+        return drive;
     }
 
-    public void setDriveId(Integer driveId) {
-        this.driveId = driveId;
+    public void setDrive(Drive drive) {
+        this.drive = drive;
     }
 
-    public Integer getJobId() {
-        return jobId;
+    public Job getJob() {
+        return job;
     }
 
-    public void setJobId(Integer jobId) {
-        this.jobId = jobId;
+    public void setJob(Job job) {
+        this.job = job;
     }
 
     public String getPackageValue() {

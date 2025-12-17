@@ -1,5 +1,10 @@
 package com.application.project.Drivejob;
 
+import com.application.project.Drive.Drive;
+import com.application.project.Drive.DriveRepository;
+import com.application.project.Job.Job;
+import com.application.project.Job.JobRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,57 +13,60 @@ import java.util.Optional;
 @Service
 public class DriveJobService {
 
-    private final DriveJobRepository repository;
+    @Autowired
+    private DriveJobRepository driveJobRepository;
 
-    public DriveJobService(DriveJobRepository repository) {
-        this.repository = repository;
-    }
+    @Autowired
+    private DriveRepository driveRepository;
 
-    // ================== READ ==================
+    @Autowired
+    private JobRepository jobRepository;
 
-    public List<DriveJob> getAllDriveJobs() {
-        return repository.findAll();
+    public DriveJob createDriveJob(DriveJob driveJob) {
+        return driveJobRepository.save(driveJob);
     }
 
     public DriveJob getDriveJobById(Integer id) {
-        return repository.findById(id).orElse(null);
+        return driveJobRepository.findById(id).orElse(null);
     }
 
-    // ================== CREATE ==================
-
-    public DriveJob createDriveJob(DriveJob driveJob) {
-        // ❌ id must NOT be set here
-        return repository.save(driveJob);
+    public List<DriveJob> getDriveJobsByDriveId(Integer driveId) {
+        Optional<Drive> drive = driveRepository.findById(driveId);
+        return drive.map(driveJobRepository::findByDrive)
+                    .orElse(List.of());
     }
 
-    // ================== DELETE ==================
+    public List<DriveJob> getDriveJobsByJobId(Integer jobId) {
+        Optional<Job> job = jobRepository.findById(jobId);
+        return job.map(driveJobRepository::findByJob)
+                  .orElse(List.of());
+    }
+
+    public DriveJob updateDriveJob(Integer id, DriveJob driveJob) {
+
+        Optional<DriveJob> existing = driveJobRepository.findById(id);
+
+        if (existing.isPresent()) {
+            DriveJob dj = existing.get();
+            dj.setDrive(driveJob.getDrive());
+            dj.setJob(driveJob.getJob());
+            dj.setPackageValue(driveJob.getPackageValue());
+            dj.setTenthCutOffPercentage(driveJob.getTenthCutOffPercentage());
+            dj.setTwelfthCutOffPercentage(driveJob.getTwelfthCutOffPercentage());
+            dj.setBacklogsEligibility(driveJob.getBacklogsEligibility());
+            dj.setCgpaCutoff(driveJob.getCgpaCutoff());
+            dj.setBranch(driveJob.getBranch());
+
+            return driveJobRepository.save(dj);
+        }
+        return null;
+    }
 
     public void deleteDriveJob(Integer id) {
-        repository.deleteById(id);
+        driveJobRepository.deleteById(id);
     }
 
-    // ================== UPDATE ==================
-
-    public DriveJob updateDriveJob(Integer id, DriveJob updatedJob) {
-
-        Optional<DriveJob> existingJob = repository.findById(id);
-
-        if (existingJob.isPresent()) {
-            DriveJob job = existingJob.get();
-
-            job.setDriveId(updatedJob.getDriveId());
-            job.setJobId(updatedJob.getJobId());
-            job.setPackageValue(updatedJob.getPackageValue());
-            job.setTenthCutOffPercentage(updatedJob.getTenthCutOffPercentage());
-            job.setTwelfthCutOffPercentage(updatedJob.getTwelfthCutOffPercentage());
-            job.setBacklogsEligibility(updatedJob.getBacklogsEligibility());
-            job.setCgpaCutoff(updatedJob.getCgpaCutoff());
-            job.setBranch(updatedJob.getBranch());
-
-            return repository.save(job);
-        }
-
-        // ❌ If ID not found → DO NOT create new record with manual ID
-        return null;
+    public List<DriveJob> getAllDriveJobs() {
+        return driveJobRepository.findAll();
     }
 }
